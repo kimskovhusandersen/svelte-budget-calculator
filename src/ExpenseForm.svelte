@@ -1,19 +1,45 @@
 <script>
+  // life cycle methods in Svelte:
+  // import {
+  //   onMount,
+  //   beforeUpdate,
+  //   afterUpdate,
+  //   onDestroy,
+  // } from 'svelte';
+
+  // onMount(() => {
+  //   console.count('mounted');
+  // });
+  // beforeUpdate(() => {
+  //   console.count('before update');
+  // });
+  // afterUpdate(() => {
+  //   console.count('after update');
+  // });
+  // onDestroy(() => {
+  //   console.count('destroyed');
+  // });
+
   import Title from './Title.svelte'; // your script goes here
 
   // variables
-  export let addExpense;
+  export let handleAddExpense;
+  export let handleUpdateExpense;
   // two-way binding
-  let name = '';
-  let amount = null;
+  export let name = '';
+  export let amount = null;
+  export let isEditing = false;
+  export let hideForm;
   // $: console.log({ name, amount }); // reactive log
   $: isEmpty = !name || !amount;
 
   // functions
   function handleSubmit(e) {
     // e.preventDefault(); // using a modifier instead
-    // console.log({ name, amount });
-    addExpense({ name, amount });
+    isEditing
+      ? handleUpdateExpense({ name, amount })
+      : handleAddExpense({ name, amount });
+
     name, amount;
   }
 </script>
@@ -45,12 +71,12 @@
       class={isEmpty ? 'btn btn-block disabled' : 'btn btn-block'}
       class:disabled={isEmpty}
       disabled={isEmpty}>
-      add expense
-    </button>
-    <button class="close-btn">
-      <i class="fas fa-times" />
-      Close
+      {#if isEditing}update expense{:else}add expense{/if}
     </button>
   </form>
+  <button class="close-btn" on:click={hideForm}>
+    <i class="fas fa-times" />
+    Close
+  </button>
 
 </section>
